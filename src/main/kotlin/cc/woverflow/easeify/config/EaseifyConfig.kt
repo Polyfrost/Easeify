@@ -115,6 +115,15 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
     )
     var slownessFOV = 1f
 
+    @Property(
+        type = PropertyType.SELECTOR,
+        name = "Hotbar Scrolling Type",
+        description = "Modify the way the hotbar scrolls.",
+        category = "General",
+        options = ["Normal", "Reverse", "Off"]
+    )
+    var hotbarType = 0
+
     init {
         initialize()
     }
