@@ -96,8 +96,7 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
     @Property(
         type = PropertyType.DECIMAL_SLIDER,
         name = "Speed FOV",
-        description = "Modify your FOV when having the speed effect.\n" +
-                "This will also work with any other effect that makes you faster.",
+        description = "Modify your FOV when having the speed effect.",
         category = "Render",
         subcategory = "FOV",
         minF = -5f,
@@ -108,7 +107,7 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
     @Property(
         type = PropertyType.DECIMAL_SLIDER,
         name = "Slowness FOV",
-        description = "Modify your FOV when having the slowness effect.\nThis will also work with any other effect that slows you down.",
+        description = "Modify your FOV when having the slowness effect.",
         category = "Render",
         subcategory = "FOV",
         minF = -5f,
