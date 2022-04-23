@@ -6,7 +6,7 @@ import gg.essential.vigilance.data.Property
 import gg.essential.vigilance.data.PropertyType
 import java.io.File
 
-object EaseifyConfig : Vigilant(File("./W-OVERFLOW/${Easeify.NAME}/${Easeify.ID}.toml")) {
+object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
     @Property(
         type = PropertyType.SWITCH,
         name = "Disable Text Shadow",
@@ -41,4 +41,8 @@ object EaseifyConfig : Vigilant(File("./W-OVERFLOW/${Easeify.NAME}/${Easeify.ID}
         subcategory = "Nametags"
     )
     var nametagTextShadow = true
+
+    init {
+        initialize()
+    }
 }
