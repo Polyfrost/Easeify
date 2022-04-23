@@ -1,33 +1,71 @@
-plugins {
-    val kotlinVersion: String by System.getProperties()
+import gg.essential.gradle.util.*
 
-    java
-    kotlin("jvm") version kotlinVersion
-    id("fabric-loom") version "0.11.+"
+plugins {
+    kotlin("jvm")
+    id("gg.essential.multi-version")
+    id("gg.essential.defaults.repo")
+    id("gg.essential.defaults.java")
+    id("gg.essential.defaults.loom")
+    id("com.github.johnrengelman.shadow")
+    id("net.kyori.blossom")
 }
 
-group = "com.example"
-version = "1.0"
+val mod_name: String by project
+val mod_version: String by project
+val mod_id: String by project
+
+blossom {
+    replaceToken("@VER@", mod_version)
+    replaceToken("@NAME@", mod_name)
+    replaceToken("@ID@", mod_id)
+}
+
+version = mod_version
+group = "cc.woverflow"
+base {
+    archivesName.set("$mod_name-$platform")
+}
+
+tasks.compileKotlin.setJvmDefault(if (platform.mcVersion >= 11400) "all" else "all-compatibility")
+loom.noServerRunConfigs()
+loom {
+    if (project.platform.isForge) {
+        forge {
+            mixinConfig("${mod_id}.mixins.json")
+        }
+    }
+    mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
+}
 
 repositories {
-    mavenCentral()
+    maven("https://repo.woverflow.cc/")
+}
+
+val shade: Configuration by configurations.creating {
+    configurations.implementation.get().extendsFrom(this)
+}
+
+val shadeMod: Configuration by configurations.creating {
+    configurations.modImplementation.get().extendsFrom(this)
 }
 
 dependencies {
     val kotlinVersion: String by System.getProperties()
-    val minecraftVersion: String by project
-    val yarnVersion: String by project
-    val loaderVersion: String by project
     val fabricVersion: String by project
     val fabricKotlinVersion: String by project
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
 
-    minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnVersion:v2")
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
+    if (platform.isFabric) {
+        modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+        modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
+        modImplementation("com.terraformersmc:modmenu:3.+")
+        shadeMod("gg.essential:vigilance-1.18.1-${platform.loaderStr}:215") {
+            exclude(module = "kotlin-reflect")
+            exclude(module = "kotlin-stdlib-jdk8")
+            exclude(group = "net.fabricmc")
+        }
+    }
 }
 
 kotlin {
@@ -36,15 +74,80 @@ kotlin {
     }
 }
 
+tasks.processResources {
+    inputs.property("id", mod_id)
+    inputs.property("name", mod_name)
+    val java = if (project.platform.mcMinor >= 18) {
+        17
+    } else {if (project.platform.mcMinor == 17) 16 else 8 }
+    val compatLevel = "JAVA_${java}"
+    inputs.property("java", java)
+    inputs.property("java_level", compatLevel)
+    inputs.property("version", mod_version)
+    inputs.property("mcVersionStr", project.platform.mcVersionStr)
+    filesMatching(listOf("mcmod.info", "${mod_id}.mixins.json", "mods.toml")) {
+        expand(mapOf(
+            "id" to mod_id,
+            "name" to mod_name,
+            "java" to java,
+            "java_level" to compatLevel,
+            "version" to mod_version,
+            "mcVersionStr" to project.platform.mcVersionStr
+        ))
+    }
+    filesMatching("fabric.mod.json") {
+        expand(mapOf(
+            "id" to mod_id,
+            "name" to mod_name,
+            "java" to java,
+            "java_level" to compatLevel,
+            "version" to mod_version,
+            "mcVersionStr" to project.platform.mcVersionStr.substringBeforeLast(".") + ".x"
+        ))
+    }
+}
+
 tasks {
-    processResources {
-        inputs.property("version", project.version)
-        filesMatching("fabric.mod.json") {
-            expand(
-                mutableMapOf(
-                    "version" to project.version
-                )
-            )
+    withType(Jar::class.java) {
+        if (project.platform.isFabric) {
+            exclude("mcmod.info", "mods.toml")
+        } else {
+            exclude("fabric.mod.json", "${mod_id}.mixins.json")
+            if (project.platform.isLegacyForge) {
+                exclude("mods.toml")
+            } else {
+                exclude("mcmod.info")
+            }
         }
+    }
+    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+        archiveClassifier.set("dev")
+        configurations = listOf(shade, shadeMod)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        relocate("gg.essential", "cc.woverflow.libs.essential")
+
+        exclude(
+            "README.md"
+        )
+        if (platform.isFabric) {
+            exclude("pack.mcmeta", "mods.toml")
+        } else {
+            exclude("fabric.mod.json")
+        }
+    }
+    remapJar {
+        input.set(shadowJar.get().archiveFile)
+        archiveClassifier.set("")
+    }
+    jar {
+        manifest {
+            attributes(mapOf(
+                "ModSide" to "CLIENT",
+                "ForceLoadAsMod" to true
+            ))
+        }
+        dependsOn(shadowJar)
+        archiveClassifier.set("")
+        enabled = false
     }
 }
