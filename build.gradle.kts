@@ -55,6 +55,11 @@ dependencies {
     val fabricKotlinVersion: String by project
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
+    "com.github.llamalad7:mixinextras:0.0.+".let {
+        implementation(it)
+        annotationProcessor(it)
+        include(it)
+    }
 
     if (platform.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")

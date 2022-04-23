@@ -2,11 +2,13 @@
   "required": true,
   "package": "cc.woverflow.easeify.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "cc.woverflow.easeify.plugin.EaseifyMixinPlugin",
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
     "EntityRendererMixin",
+    "GameRendererMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "TextRendererDrawerMixin",
