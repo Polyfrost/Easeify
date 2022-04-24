@@ -42,6 +42,14 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Disable Crosshair in GUIs",
+        description = "Disable your crosshair when you are in a GUI.",
+        category = "Render"
+    )
+    var disableCrosshairGui = false
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "FOV Modifier",
         description = "Allow for modifying FOV change states.",
         category = "Render",
