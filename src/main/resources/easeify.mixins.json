@@ -9,6 +9,7 @@
   "mixins": [
     "EntityRendererMixin",
     "GameRendererMixin",
+    "InGameHudMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "MouseMixin",
