@@ -34,6 +34,11 @@ loom {
             mixinConfig("${mod_id}.mixins.json")
         }
     }
+    launchConfigs {
+        named("client") {
+            property("mixin.debug.export", "true")
+        }
+    }
     mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
 }
 
@@ -60,6 +65,12 @@ dependencies {
         annotationProcessor(it)
         include(it)
     }
+
+    modRuntimeOnly("me.djtheredstoner:DevAuth-${when (platform.loader) {
+        gg.essential.gradle.multiversion.Platform.Loader.Fabric -> "fabric"
+        gg.essential.gradle.multiversion.Platform.Loader.Forge -> "forge-latest"
+    }
+    }:1.0.0")
 
     if (platform.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")

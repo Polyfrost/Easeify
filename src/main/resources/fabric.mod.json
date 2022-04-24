@@ -7,6 +7,9 @@
   "authors": [
     "W-OVERFLOW"
   ],
+  "contributors": [
+    "Sk1erLLC for Patcher, which inspired many features of this mod."
+  ],
   "contact": {
     "homepage": "https://woverflow.cc",
     "issues": "https://github.com/W-OVERFLOW/Easeify/issues",
