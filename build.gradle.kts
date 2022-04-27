@@ -37,6 +37,7 @@ loom {
     launchConfigs {
         named("client") {
             property("mixin.debug.export", "true")
+            property("mixin.dumpTargetOnFailure", "true")
         }
     }
     mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
@@ -60,7 +61,7 @@ dependencies {
     val fabricKotlinVersion: String by project
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    "com.github.llamalad7:mixinextras:0.0.+".let {
+    "com.github.llamalad7:mixinextras:0.0.9".let {
         implementation(it)
         annotationProcessor(it)
         include(it)
@@ -71,6 +72,8 @@ dependencies {
         gg.essential.gradle.multiversion.Platform.Loader.Forge -> "forge-latest"
     }
     }:1.0.0")
+
+    shadeMod("com.github.cbyrneee:toasts:376e1cee3c")
 
     if (platform.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
@@ -140,7 +143,9 @@ tasks {
         archiveClassifier.set("dev")
         configurations = listOf(shade, shadeMod)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        relocate("gg.essential", "cc.woverflow.libs.essential")
+        relocate("gg.essential", "cc.woverflow.easeify.libs.essential")
+        relocate("com.llamalad7.mixinextras", "cc.woverflow.easeify.libs.mixinextras")
+        relocate("dev.cbyrne.toasts", "cc.woverflow.easeify.libs.toasts")
 
         exclude(
             "README.md"

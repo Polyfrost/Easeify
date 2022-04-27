@@ -5,6 +5,7 @@ import gg.essential.universal.ChatColor
 import gg.essential.vigilance.Vigilant
 import gg.essential.vigilance.data.Property
 import gg.essential.vigilance.data.PropertyType
+import net.minecraft.client.MinecraftClient
 import java.io.File
 
 
@@ -17,6 +18,14 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
         category = "Render"
     )
     var disableTextShadow = false
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Block Particles",
+        description = "Disable block breaking particles.",
+        category = "Render"
+    )
+    var disableBlockParticles = false
 
     @Property(
         type = PropertyType.SWITCH,
@@ -227,6 +236,16 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
         options = ["Normal", "Reverse", "Off"]
     )
     var hotbarType = 0
+
+    @Property(
+        type = PropertyType.BUTTON,
+        name = "Access Sounds Settings",
+        description = "Open the sounds settings.",
+        category = "General"
+    )
+    fun soundSettings() {
+        MinecraftClient.getInstance().setScreen(EaseifySoundConfig.gui())
+    }
 
     init {
         initialize()

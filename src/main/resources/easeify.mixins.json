@@ -16,7 +16,9 @@
     "ItemEntityRendererMixin",
     "LivingEntityRendererMixin",
     "MouseMixin",
+    "ParticleManagerMixin",
     "ProjectileEntityRendererMixin",
+    "SoundSystemMixin",
     "TextRendererDrawerMixin",
     "TextRendererMixin"
   ]
