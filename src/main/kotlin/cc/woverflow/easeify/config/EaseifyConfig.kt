@@ -71,6 +71,15 @@ object EaseifyConfig :
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Disable Crosshair in GUIs",
+        description = "Disable your crosshair when you are in a GUI.",
+        category = "Render",
+        subcategory = "Crosshair"
+    )
+    var disableCrosshairGui = false
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Render Own Nametag",
         description = "Render your own nametag in third person.",
         category = "Render",
@@ -104,14 +113,6 @@ object EaseifyConfig :
         subcategory = "Nametags"
     )
     var persistentNametags = false
-
-    @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Crosshair in GUIs",
-        description = "Disable your crosshair when you are in a GUI.",
-        category = "Render"
-    )
-    var disableCrosshairGui = false
 
     @Property(
         type = PropertyType.SWITCH,
