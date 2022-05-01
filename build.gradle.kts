@@ -8,6 +8,7 @@ plugins {
     id("gg.essential.defaults.loom")
     id("com.github.johnrengelman.shadow")
     id("net.kyori.blossom")
+    id("io.github.juuxel.loom-quiltflower-mini")
 }
 
 val mod_name: String by project
@@ -24,6 +25,10 @@ version = mod_version
 group = "cc.woverflow"
 base {
     archivesName.set("$mod_name-$platform")
+}
+
+quiltflower {
+    addToRuntimeClasspath.set(true)
 }
 
 tasks.compileKotlin.setJvmDefault(if (platform.mcVersion >= 11400) "all" else "all-compatibility")
