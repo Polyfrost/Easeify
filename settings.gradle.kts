@@ -2,10 +2,20 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        maven("https://jitpack.io")
         maven("https://maven.fabricmc.net")
         maven("https://maven.architectury.dev/")
         maven("https://maven.minecraftforge.net")
         maven("https://repo.essential.gg/repository/maven-public")
+        maven("https://server.bbkr.space/artifactory/libs-release/")
+        maven("https://maven.quiltmc.org/repository/release")
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "io.github.juuxel.loom-quiltflower-mini") {
+                useModule("com.github.wyvest:loom-quiltflower-mini:${requested.version}")
+            }
+        }
     }
     plugins {
         val egtVersion = "0.1.4"

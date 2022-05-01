@@ -3,13 +3,29 @@ package cc.woverflow.easeify.config
 import cc.woverflow.easeify.Easeify
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.Vigilant
-import gg.essential.vigilance.data.Property
-import gg.essential.vigilance.data.PropertyType
+import gg.essential.vigilance.data.*
 import net.minecraft.client.MinecraftClient
 import java.io.File
 
 
-object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
+object EaseifyConfig :
+    Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml"), sortingBehavior = object : SortingBehavior() {
+        override fun getPropertyComparator(): Comparator<in PropertyData> = Comparator { o1, o2 ->
+            if (o1.attributesExt.name == "!!Keybind!!") return@Comparator -1
+            if (o2.attributesExt.name == "!!Keybind!!") return@Comparator 1
+            else return@Comparator compareValuesBy(o1, o2) {
+                it.attributesExt.subcategory
+            }
+        }
+
+        override fun getCategoryComparator(): Comparator<in Category> = Comparator { o1, o2 ->
+            if (o1.name == "General") return@Comparator -1
+            if (o2.name == "General") return@Comparator 1
+            else return@Comparator compareValuesBy(o1, o2) {
+                it.name
+            }
+        }
+    }) {
 
     @Property(
         type = PropertyType.SWITCH,
@@ -246,6 +262,69 @@ object EaseifyConfig : Vigilant(File(Easeify.modDir, "${Easeify.ID}.toml")) {
     fun soundSettings() {
         MinecraftClient.getInstance().setScreen(EaseifySoundConfig.gui())
     }
+
+    @Property(
+        type = PropertyType.BUTTON,
+        name = "!!Keybind!!",
+        description = "§l§o§nThe ability to edit the keybind is in the Minecraft Controls Menu.\n" +
+                "§rYou can find the Minecraft controls menu in Options -> Controls -> Key Binds.",
+        category = "BehindYou",
+        placeholder = "Hide on restart"
+    )
+    fun warning() {
+        disableWarning = true
+        markDirty()
+        writeData()
+    }
+
+    @Property(type = PropertyType.SWITCH, name = "Disable Keybind Warning", category = "BehindYou", hidden = true)
+    var disableWarning = false
+
+    @Property(
+        type = PropertyType.SELECTOR,
+        name = "Frontview Keybind Handle Mode",
+        description = "Set how the keybind is turned on for frontview.",
+        category = "BehindYou",
+        options = ["Hold", "Toggle"]
+    )
+    var frontKeybindMode = 0
+
+    @Property(
+        type = PropertyType.SELECTOR,
+        name = "Backview Keybind Handle Mode",
+        description = "Set how the keybind is turned on for backview.",
+        category = "BehindYou",
+        options = ["Hold", "Toggle"]
+    )
+    var backKeybindMode = 0
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Change FOV When Clicking Keybind",
+        description = "Change your FOV when clicking the BehindYou keybind.",
+        category = "BehindYou"
+    )
+    var changeFOV = false
+
+    @Property(
+        type = PropertyType.NUMBER,
+        name = "Change FOV For Backview Keybind",
+        description = "Set the FOV when clicking on the behind keybind.",
+        category = "BehindYou",
+        min = 30,
+        max = 130
+    )
+    var backFOV = 100
+
+    @Property(
+        type = PropertyType.NUMBER,
+        name = "Change FOV For Frontview Keybind",
+        description = "Set the FOV when clicking on the front keybind.",
+        category = "BehindYou",
+        min = 30,
+        max = 130
+    )
+    var frontFOV = 100
 
     init {
         initialize()

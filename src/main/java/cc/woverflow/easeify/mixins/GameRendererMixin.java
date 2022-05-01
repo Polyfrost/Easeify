@@ -1,6 +1,7 @@
 package cc.woverflow.easeify.mixins;
 
 import cc.woverflow.easeify.config.EaseifyConfig;
+import cc.woverflow.easeify.hooks.BehindYouHook;
 import cc.woverflow.easeify.hooks.FOVMultiplierHook;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.MinecraftClient;
@@ -12,10 +13,18 @@ import net.minecraft.item.ItemStack;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void handleBehindYou(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
+        BehindYouHook.INSTANCE.onTick();
+    }
+
     @ModifyExpressionValue(method = "updateFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getFovMultiplier()F"))
     private float modifyMultiplier(float initial) {
         return FOVMultiplierHook.INSTANCE.modifyFOVMultiplier(initial);
