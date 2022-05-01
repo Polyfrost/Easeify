@@ -1,5 +1,6 @@
 package cc.woverflow.easeify
 
+import cc.woverflow.easeify.hooks.BehindYouHook
 import net.fabricmc.api.ClientModInitializer
 import java.io.File
 
@@ -8,6 +9,7 @@ class Easeify : ClientModInitializer {
         if (!modDir.exists()) {
             modDir.mkdirs()
         }
+        BehindYouHook.initialize()
     }
 
     companion object {
