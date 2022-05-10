@@ -19,6 +19,7 @@
     "ParticleManagerMixin",
     "ProjectileEntityRendererMixin",
     "TextRendererDrawerMixin",
-    "TextRendererMixin"
+    "TextRendererMixin",
+    "ToastManagerAccessor"
   ]
 }

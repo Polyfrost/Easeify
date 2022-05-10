@@ -38,5 +38,6 @@
     "minecraft": "1.18.x",
     "java": ">=17",
     "modmenu": "*"
-  }
+  },
+  "accessWidener": "easeify.accesswidener"
 }

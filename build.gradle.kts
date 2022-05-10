@@ -46,6 +46,7 @@ loom {
         }
     }
     mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
+    accessWidenerPath.set(rootProject.file("src/main/resources/easeify.accesswidener"))
 }
 
 repositories {
