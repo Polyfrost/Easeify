@@ -3,6 +3,7 @@ package cc.woverflow.easeify.utils
 import cc.woverflow.easeify.Easeify
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import gg.essential.universal.UChat
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClientBuilder
@@ -43,7 +44,7 @@ object APIUtil {
                 }
             }
         } catch (ex: Throwable) {
-            showToast("Error: ${ex.message}", "Easeify ran into an ${ex::class.simpleName ?: "error"} whilst fetching a resource. See logs for more details.")
+            UChat.chat("Easeify ran into an ${ex::class.simpleName ?: "error"} whilst fetching a resource. See logs for more details.")
             ex.printStackTrace()
         } finally {
             client.close()
