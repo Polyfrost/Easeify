@@ -70,7 +70,7 @@ dependencies {
     "com.github.llamalad7:mixinextras:0.0.9".let {
         implementation(it)
         annotationProcessor(it)
-        include(it)
+        shade(it)
     }
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-${when (platform.loader) {
