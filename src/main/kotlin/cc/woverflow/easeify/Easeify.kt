@@ -3,16 +3,19 @@ package cc.woverflow.easeify
 import cc.woverflow.easeify.hooks.BehindYouHook
 import cc.woverflow.easeify.utils.APIUtil
 import cc.woverflow.easeify.utils.getJsonElement
-import cc.woverflow.easeify.utils.showClickableToast
-import gg.essential.universal.UDesktop
+import gg.essential.universal.ChatColor
+import gg.essential.universal.UChat
+import gg.essential.universal.utils.MCClickEventAction
+import gg.essential.universal.utils.MCHoverEventAction
+import gg.essential.universal.wrappers.message.UTextComponent
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.minecraft.text.LiteralText
 import java.io.File
-import java.net.URI
 
 class Easeify : ClientModInitializer {
     override fun onInitializeClient() {
@@ -23,7 +26,6 @@ class Easeify : ClientModInitializer {
         ClientTickEvents.START_WORLD_TICK.register {
             if (!hasChecked) {
                 hasChecked = true
-                // do checking
                 CoroutineScope(Dispatchers.IO + CoroutineName("Easeify Update Checker")).launch {
                     try {
                         APIUtil.getJsonElement("https://api.github.com/repos/W-OVERFLOW/$ID/releases/latest")?.asJsonObject?.let { latestRelease ->
@@ -32,10 +34,11 @@ class Easeify : ClientModInitializer {
                                 latestRelease["html_url"].asString
                             ).let {
                                 if (UpdateVersion(VER) < it) {
-                                    showClickableToast("Easeify is out of date!",
-                                        "Please update to version ${it.version} by clicking here.", duration = 10000L) {
-                                        it.url?.let { it1 -> URI.create(it1) }?.let { it2 -> UDesktop.browse(it2) }
-                                    }
+                                    UChat.chat(UTextComponent("${ChatColor.BOLD}Easeify is out of date!${ChatColor.RESET}"))
+                                    val chat = UTextComponent("${ChatColor.GREEN}Please update to version ${it.version} by clicking here.${ChatColor.RESET}")
+                                    chat.setHover(MCHoverEventAction.SHOW_TEXT, LiteralText("Click to update!"))
+                                    it.url?.let { it1 -> chat.setClick(MCClickEventAction.OPEN_URL, it1) }
+                                    UChat.chat(chat)
                                 }
                             }
                         }
