@@ -79,8 +79,6 @@ dependencies {
     }
     }:1.0.0")
 
-    shadeMod("com.github.cbyrneee:toasts:376e1cee3c")
-
     if (platform.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
         modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")

@@ -18,7 +18,9 @@ public class SoundSystemMixin {
 
     @ModifyExpressionValue(method = "reloadSounds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundManager;get(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/sound/WeightedSoundSet;"))
     private WeightedSoundSet onGetSound(WeightedSoundSet value) {
-        SoundHook.INSTANCE.registerSound(value);
+        if (value != null) {
+            SoundHook.INSTANCE.registerSound(value);
+        }
         return value;
     }
 
