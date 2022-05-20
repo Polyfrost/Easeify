@@ -67,7 +67,7 @@ dependencies {
     val fabricKotlinVersion: String by project
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    "com.github.llamalad7:mixinextras:0.0.9".let {
+    "com.github.llamalad7:mixinextras:0.0.10".let {
         implementation(it)
         annotationProcessor(it)
         shade(it)
