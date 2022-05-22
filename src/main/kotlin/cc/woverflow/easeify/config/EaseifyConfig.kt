@@ -53,15 +53,6 @@ object EaseifyConfig :
 
     @Property(
         type = PropertyType.SWITCH,
-        name = "Remove Ground Foliage",
-        description = "Stop plants/flowers from rendering. \n§cPress F3 + T to apply changes.",
-        category = "Render",
-        subcategory = "Blocks"
-    )
-    var removeGroundFoliage = false
-
-    @Property(
-        type = PropertyType.SWITCH,
         name = "Persistent Crosshair Rendering",
         description = "Render the crosshair even in third-person.",
         category = "Render",
@@ -262,16 +253,6 @@ object EaseifyConfig :
         options = ["Normal", "Reverse", "Off"]
     )
     var hotbarType = 0
-
-    @Property(
-        type = PropertyType.BUTTON,
-        name = "Access Sounds Settings",
-        description = "Open the sounds settings.",
-        category = "General"
-    )
-    fun soundSettings() {
-        MinecraftClient.getInstance().setScreen(EaseifySoundConfig.gui())
-    }
 
     @Property(
         type = PropertyType.BUTTON,
