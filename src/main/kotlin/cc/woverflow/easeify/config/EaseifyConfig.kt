@@ -71,6 +71,15 @@ object EaseifyConfig :
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Remove Ground Foliage",
+        description = "Stop plants/flowers from rendering. \n§cPress F3 + T to apply changes.",
+        category = "Render",
+        subcategory = "Blocks"
+    )
+    var removeGroundFoliage = false
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Disable Crosshair in GUIs",
         description = "Disable your crosshair when you are in a GUI.",
         category = "Render",

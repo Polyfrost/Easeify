@@ -9,6 +9,7 @@
     "maxShiftBy": 5
   },
   "mixins": [
+    "AbstractBlockMixin",
     "EntityRendererMixin",
     "GameRendererMixin",
     "InGameHudMixin",
