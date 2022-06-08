@@ -82,7 +82,7 @@ dependencies {
     if (platform.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
         modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
-        modImplementation("com.terraformersmc:modmenu:3.+")
+        modImplementation("com.terraformersmc:modmenu:4.+")
         shadeMod("gg.essential:vigilance-1.18.1-${platform.loaderStr}:215") {
             exclude(module = "kotlin-reflect")
             exclude(module = "kotlin-stdlib-jdk8")
