@@ -128,9 +128,13 @@ object BehindYouHook {
         MinecraftClient.getInstance().options.perspective = Perspective.values()[value]
     }
 
-    private fun getFOV() = MinecraftClient.getInstance().options.fov
+    private fun getFOV() = MinecraftClient.getInstance().options.fov.getValue().toDouble()
 
     private fun setFOV(value: Number) {
+        //#if MC<11900
         MinecraftClient.getInstance().options.fov = value.toDouble()
+        //#else
+        //$$ MinecraftClient.getInstance().options.fov.setValue(value.toInt())
+        //#endif
     }
 }

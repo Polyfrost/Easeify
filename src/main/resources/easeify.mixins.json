@@ -18,9 +18,7 @@
     "LivingEntityRendererMixin",
     "MouseMixin",
     "ParticleManagerMixin",
-    "ProjectileEntityRendererMixin",
     "TextRendererDrawerMixin",
-    "TextRendererMixin",
-    "ToastManagerAccessor"
+    "TextRendererMixin"
   ]
 }

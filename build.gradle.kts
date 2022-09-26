@@ -8,7 +8,7 @@ plugins {
     id("gg.essential.defaults.loom")
     id("com.github.johnrengelman.shadow")
     id("net.kyori.blossom")
-    id("io.github.juuxel.loom-quiltflower-mini")
+    id("io.github.juuxel.loom-quiltflower")
 }
 
 val mod_name: String by project
@@ -45,12 +45,21 @@ loom {
             property("mixin.dumpTargetOnFailure", "true")
         }
     }
+    runConfigs {
+        named("client") {
+            ideConfigGenerated(true)
+        }
+    }
     mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
     accessWidenerPath.set(rootProject.file("src/main/resources/easeify.accesswidener"))
 }
 
 repositories {
-    maven("https://repo.woverflow.cc/")
+    maven("https://repo.polyfrost.cc")
+    maven("https://maven.isxander.dev/releases")
+    maven("https://maven.shedaniel.me/")
+    maven("https://maven.terraformersmc.com/releases")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 val shade: Configuration by configurations.creating {
@@ -67,7 +76,7 @@ dependencies {
     val fabricKotlinVersion: String by project
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    "com.github.llamalad7:mixinextras:0.0.10".let {
+    "com.github.llamalad7:mixinextras:0.0.12".let {
         implementation(it)
         annotationProcessor(it)
         shade(it)
@@ -79,15 +88,20 @@ dependencies {
     }
     }:1.0.0")
 
-    if (platform.isFabric) {
-        modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-        modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
-        modImplementation("com.terraformersmc:modmenu:3.+")
-        shadeMod("gg.essential:vigilance-1.18.1-${platform.loaderStr}:215") {
-            exclude(module = "kotlin-reflect")
-            exclude(module = "kotlin-stdlib-jdk8")
-            exclude(group = "net.fabricmc")
-        }
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
+    modImplementation("com.terraformersmc:modmenu:${if (platform.mcVersion >= 11900) "4.+" else "3.+"}")
+    shadeMod("gg.essential:vigilance-1.18.1-${platform.loaderStr}:258") {
+        exclude(module = "kotlin-reflect")
+        exclude(module = "kotlin-stdlib-jdk8")
+        exclude(group = "net.fabricmc")
+        exclude(module = "universalcraft-1.18.1-fabric")
+    }
+    val ucVersion = if (platform.mcVersion == 11802) "1.18.1" else platform.mcVersionStr
+    shadeMod("gg.essential:universalcraft-$ucVersion-${platform.loaderStr}:236") {
+        exclude(module = "kotlin-reflect")
+        exclude(module = "kotlin-stdlib-jdk8")
+        exclude(group = "net.fabricmc")
     }
 }
 
@@ -125,23 +139,14 @@ tasks.processResources {
             "java" to java,
             "java_level" to compatLevel,
             "version" to mod_version,
-            "mcVersionStr" to project.platform.mcVersionStr.substringBeforeLast(".") + ".x"
+            "mcVersionStr" to project.platform.mcVersionStr.let { if (platform.mcVersion in 11900..11902) it else it.substringBeforeLast(".") + ".x" }
         ))
     }
 }
 
 tasks {
     withType(Jar::class.java) {
-        if (project.platform.isFabric) {
-            exclude("mcmod.info", "mods.toml")
-        } else {
-            exclude("fabric.mod.json", "${mod_id}.mixins.json")
-            if (project.platform.isLegacyForge) {
-                exclude("mods.toml")
-            } else {
-                exclude("mcmod.info")
-            }
-        }
+        exclude("mcmod.info", "mods.toml")
     }
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         archiveClassifier.set("dev")
@@ -149,16 +154,8 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         relocate("gg.essential", "cc.woverflow.easeify.libs.essential")
         relocate("com.llamalad7.mixinextras", "cc.woverflow.easeify.libs.mixinextras")
-        relocate("dev.cbyrne.toasts", "cc.woverflow.easeify.libs.toasts")
 
-        exclude(
-            "README.md"
-        )
-        if (platform.isFabric) {
-            exclude("pack.mcmeta", "mods.toml")
-        } else {
-            exclude("fabric.mod.json")
-        }
+        exclude("pack.mcmeta", "mods.toml")
     }
     remapJar {
         input.set(shadowJar.get().archiveFile)

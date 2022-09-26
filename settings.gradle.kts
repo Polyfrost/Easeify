@@ -10,15 +10,8 @@ pluginManagement {
         maven("https://server.bbkr.space/artifactory/libs-release/")
         maven("https://maven.quiltmc.org/repository/release")
     }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "io.github.juuxel.loom-quiltflower-mini") {
-                useModule("com.github.wyvest:loom-quiltflower-mini:${requested.version}")
-            }
-        }
-    }
     plugins {
-        val egtVersion = "0.1.4"
+        val egtVersion = "0.1.16"
         id("gg.essential.multi-version.root") version egtVersion
     }
 }
@@ -29,7 +22,10 @@ rootProject.name = mod_name
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.18.2-fabric"
+    "1.18.2-fabric",
+    "1.19-fabric",
+    "1.19.1-fabric",
+    "1.19.2-fabric"
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {

@@ -7,6 +7,10 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Items
 import net.minecraft.util.math.MathHelper
 
+/**
+ * Adapted from Hyperium under LGPL 3.0
+ * https://github.com/HyperiumClient/Hyperium/blob/master/LICENSE
+ */
 object FOVMultiplierHook {
     private val BOW_FOVS = mapOf(
         1 to 3.7497282E-4f,
@@ -69,7 +73,7 @@ object FOVMultiplierHook {
                             return@run
                         }
                     }
-                    initial = MathHelper.lerp(MinecraftClient.getInstance().options.fovEffectScale, 1.0f, initial)
+                    initial = MathHelper.lerp(MinecraftClient.getInstance().options.fovEffectScale.getValue().toFloat(), 1.0f, initial)
                     return@run
                 }
             }

@@ -4,7 +4,6 @@ import cc.woverflow.easeify.Easeify
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.Vigilant
 import gg.essential.vigilance.data.*
-import net.minecraft.client.MinecraftClient
 import java.io.File
 
 
@@ -42,14 +41,6 @@ object EaseifyConfig :
         category = "Render"
     )
     var disableBlockParticles = false
-
-    @Property(
-        type = PropertyType.SWITCH,
-        name = "Delayed Arrow Rendering",
-        description = "Only render projectiles 2 ticks after they are shot to stop them from obstructing your view.",
-        category = "Render"
-    )
-    var delayedArrowRendering = false
 
     @Property(
         type = PropertyType.SWITCH,
