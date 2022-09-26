@@ -209,6 +209,43 @@ object EaseifyConfig :
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Disable Titles",
+        description = "Stop titles from rendering.",
+        category = "Render",
+        subcategory = "Titles"
+    )
+    var disableTitles = false
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER,
+        name = "Title Scale",
+        description = "Set the scale for titles.",
+        category = "Render",
+        subcategory = "Titles"
+    )
+    var titleScale = 1.0f
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Automatically Scale Title",
+        description = "Automatically scale titles if the title goes over the screen.",
+        category = "Render",
+        subcategory = "Titles"
+    )
+    var autoTitleScale = false
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER,
+        name = "Title Opacity",
+        description = "Change the opacity of titles.",
+        category = "Render",
+        subcategory = "Titles",
+        maxF = 1.0f
+    )
+    var titleOpacity = 1.0f
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Static Items",
         description = "Remove the bobbing of items dropping in the ground.",
         category = "Render",
