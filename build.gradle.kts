@@ -62,12 +62,37 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val shade: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+val includeTransitive: Configuration by configurations.creating
+
+fun DependencyHandlerScope.includeTransitive(
+    root: ResolvedDependency?,
+    dependencies: Set<ResolvedDependency>,
+    fabricLanguageKotlinDependency: ResolvedDependency,
+    checkedDependencies: MutableSet<ResolvedDependency> = HashSet()
+) {
+    dependencies.forEach {
+        if (checkedDependencies.contains(it) || (it.moduleGroup == "org.jetbrains.kotlin" && it.moduleName.startsWith("kotlin-stdlib")) || (it.moduleGroup == "org.slf4j" && it.moduleName == "slf4j-api"))
+            return@forEach
+
+        if (fabricLanguageKotlinDependency.children.any { kotlinDep -> kotlinDep.name == it.name }) {
+            println("Skipping -> ${it.name} (already in fabric-language-kotlin)")
+        } else {
+            include(it.name)
+            println("Including -> ${it.name} from ${root?.name}")
+        }
+        checkedDependencies += it
+
+        includeTransitive(root ?: it, it.children, fabricLanguageKotlinDependency, checkedDependencies)
+    }
 }
 
-val shadeMod: Configuration by configurations.creating {
-    configurations.modImplementation.get().extendsFrom(this)
+fun DependencyHandlerScope.handleIncludes(project: Project, configuration: Configuration) {
+    includeTransitive(
+        null,
+        configuration.resolvedConfiguration.firstLevelModuleDependencies,
+        project.configurations.getByName("modImplementation").resolvedConfiguration.firstLevelModuleDependencies
+            .first { it.moduleGroup == "net.fabricmc" && it.moduleName == "fabric-language-kotlin" }
+    )
 }
 
 dependencies {
@@ -79,7 +104,7 @@ dependencies {
     "com.github.llamalad7:mixinextras:0.0.12".let {
         implementation(it)
         annotationProcessor(it)
-        shade(it)
+        include(it)
     }
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-${when (platform.loader) {
@@ -91,18 +116,26 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion+kotlin.$kotlinVersion")
     modImplementation("com.terraformersmc:modmenu:${if (platform.mcVersion >= 11900) "4.+" else "3.+"}")
-    shadeMod("gg.essential:vigilance-1.18.1-${platform.loaderStr}:258") {
+    includeTransitive(modImplementation("gg.essential:vigilance-1.18.1-${platform.loaderStr}:258") {
+        exclude(module = "kotlin-reflect")
+        exclude(module = "kotlin-stdlib-jdk8")
+        exclude(group = "net.fabricmc")
+        exclude(module = "elementa-1.18.1-fabric")
+        exclude(module = "universalcraft-1.18.1-fabric")
+    })
+    includeTransitive(modImplementation("gg.essential:elementa-1.18.1-${platform.loaderStr}:544") {
         exclude(module = "kotlin-reflect")
         exclude(module = "kotlin-stdlib-jdk8")
         exclude(group = "net.fabricmc")
         exclude(module = "universalcraft-1.18.1-fabric")
-    }
+    })
     val ucVersion = if (platform.mcVersion == 11802) "1.18.1" else platform.mcVersionStr
-    shadeMod("gg.essential:universalcraft-$ucVersion-${platform.loaderStr}:236") {
+    includeTransitive(modImplementation("gg.essential:universalcraft-$ucVersion-${platform.loaderStr}:236") {
         exclude(module = "kotlin-reflect")
         exclude(module = "kotlin-stdlib-jdk8")
         exclude(group = "net.fabricmc")
-    }
+    })
+    handleIncludes(project, includeTransitive)
 }
 
 kotlin {
@@ -148,19 +181,6 @@ tasks {
     withType(Jar::class.java) {
         exclude("mcmod.info", "mods.toml")
     }
-    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-        archiveClassifier.set("dev")
-        configurations = listOf(shade, shadeMod)
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        relocate("gg.essential", "cc.woverflow.easeify.libs.essential")
-        relocate("com.llamalad7.mixinextras", "cc.woverflow.easeify.libs.mixinextras")
-
-        exclude("pack.mcmeta", "mods.toml")
-    }
-    remapJar {
-        input.set(shadowJar.get().archiveFile)
-        archiveClassifier.set("")
-    }
     jar {
         manifest {
             attributes(mapOf(
@@ -168,8 +188,5 @@ tasks {
                 "ForceLoadAsMod" to true
             ))
         }
-        dependsOn(shadowJar)
-        archiveClassifier.set("")
-        enabled = false
     }
 }

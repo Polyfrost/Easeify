@@ -8,9 +8,9 @@
     "defaultRequire": 1,
     "maxShiftBy": 5
   },
-  "mixins": [
-    "AbstractBlockMixin",
+  "client": [
     "EntityRendererMixin",
+    "EssentialIndicatorMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",

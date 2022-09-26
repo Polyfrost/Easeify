@@ -1,7 +1,6 @@
 package cc.woverflow.easeify.config
 
 import cc.woverflow.easeify.Easeify
-import gg.essential.universal.ChatColor
 import gg.essential.vigilance.Vigilant
 import gg.essential.vigilance.data.*
 import java.io.File
@@ -59,15 +58,6 @@ object EaseifyConfig :
         subcategory = "Crosshair"
     )
     var removeCrosshairTransparency = false
-
-    @Property(
-        type = PropertyType.SWITCH,
-        name = "Remove Ground Foliage",
-        description = "Stop plants/flowers from rendering. \n§cPress F3 + T to apply changes.",
-        category = "Render",
-        subcategory = "Blocks"
-    )
-    var removeGroundFoliage = false
 
     @Property(
         type = PropertyType.SWITCH,
@@ -192,7 +182,7 @@ object EaseifyConfig :
     @Property(
         type = PropertyType.SWITCH,
         name = "Remove Screen Bobbing",
-        description = "Remove the bobbing of the screen ${ChatColor.COLOR_CHAR}lonly${ChatColor.COLOR_CHAR}r instead of toggling the whole bobbing feature.",
+        description = "Remove all bobbing except the hand.",
         category = "Render",
         subcategory = "Bobbing"
     )
