@@ -28,7 +28,7 @@ class Easeify : ClientModInitializer {
                 hasChecked = true
                 CoroutineScope(Dispatchers.IO + CoroutineName("Easeify Update Checker")).launch {
                     try {
-                        APIUtil.getJsonElement("https://api.github.com/repos/W-OVERFLOW/$ID/releases/latest")?.asJsonObject?.let { latestRelease ->
+                        APIUtil.getJsonElement("https://api.github.com/repos/Polyfrost/$ID/releases/latest")?.asJsonObject?.let { latestRelease ->
                             UpdateVersion(
                                 latestRelease["tag_name"].asString.substringAfter("v"),
                                 latestRelease["html_url"].asString
