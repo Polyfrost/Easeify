@@ -265,6 +265,15 @@ object EaseifyConfig :
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Remove Fire Overlay While Invincible",
+        description = "Remove the fire overlay when you are in creative or have fire resistance.",
+        category = "Render",
+        subcategory = "Overlays"
+    )
+    var removeFireOverlay = false
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Remove Water Overlay",
         description = "Remove the water overlay when submerged in water.",
         category = "Render",
