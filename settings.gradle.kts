@@ -11,7 +11,7 @@ pluginManagement {
         maven("https://maven.quiltmc.org/repository/release")
     }
     plugins {
-        val egtVersion = "0.1.16"
+        val egtVersion = "0.1.18"
         id("gg.essential.multi-version.root") version egtVersion
     }
 }
